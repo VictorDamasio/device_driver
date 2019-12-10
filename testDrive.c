@@ -23,12 +23,12 @@ int main(){
     printf("Iniciando dispositivo...\n");
 	fd = open("/dev/my_device", O_RDWR);
 	if (fd < 0){
-		perror("FALHA NA ABERTURA DO DISPOSITIVO!\n");
+		perror("FALHA NA ABERTURA DO DISPOSITIVO!1\n");
 		return errno;
 	}
 
     while(!condition){
-        sprintf(buffer, "");
+        sprintf(buffer, NULL);
         printf("Mande uma instrucao ao driver:\n");
         scanf("%[^\n]%*c", buffer);
         if (buffer[0] != 'i' && buffer[0] != 'r' && buffer[0] != 'b'){
@@ -36,7 +36,7 @@ int main(){
         }
         ret = write(fd, buffer, strlen(buffer));
         if (ret < 0){
-            perror("FALHA NA ABERTURA DO DISPOSITIVO!\n");
+            perror("FALHA NA ABERTURA DO DISPOSITIVO!2\n");
             return errno;
         }
 
@@ -45,7 +45,7 @@ int main(){
         printf("%s\n", entrada);
         //entrada possui meu conteudo
         if (ret < 0){
-            perror("FALHA NA ABERTURA DO DISPOSITIVO!\n");
+            perror("FALHA NA ABERTURA DO DISPOSITIVO!3rm \n");
             return errno;
         }
     }

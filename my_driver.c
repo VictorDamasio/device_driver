@@ -1,3 +1,7 @@
+//sudo mknod -m 666 /dev/my_device c 240 0
+//make && insmod my_driver.ko && ./testDrive
+//rmmod my_driver.ko
+
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/fs.h>
@@ -12,13 +16,14 @@ int grafo[10][10];
 int adj[10];
 int i, j, k, error_count;
 
-void inserir(int grafo[10][10], int verticeI, int verticeJ){
+void inserir(int grafo[][10], int verticeI, int verticeJ){
 	grafo[verticeI][verticeJ] = 1;
 	grafo[verticeJ][verticeI] = 1;
+	printk("%d%s", grafo[verticeI][verticeJ], "\n");
 	return;
 }
 
-void remover(int grafo[10][10], int verticeI){
+void remover(int grafo[][10], int verticeI){
 	for (j = 0; j < 10; j++)
 		grafo[verticeI][j] = 0;	
 
@@ -32,16 +37,15 @@ void remover(int grafo[10][10], int verticeI){
 	return;
 }
 
-void buscar(int grafo[10][10], int adj[10], int verticeI){
+void buscar(int grafo[][10], int adj[10], int verticeI){
+	printk("Adjacente a: \n");
 	for (j = 0; j < 10; j++){
 		if (grafo[verticeI][j] == 1){
 			adj[k] = j;
-			printk("%d%c", k, ' ');
+			printk("%d", j);
 			k++;
-		}
-	}
-
-	printk("\n");
+		}		
+	}	
 
 	k = 0;
 	j = 0;
@@ -49,10 +53,11 @@ void buscar(int grafo[10][10], int adj[10], int verticeI){
 }
 
 ssize_t my_driver_read (struct file *dfile, char __user *buffer , size_t length , loff_t *offset){
-	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);
+	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);	
 
 	error_count = 0;
 	error_count = copy_to_user(buffer, message, msgLen);
+	
 
 	if (error_count == 0){
 		printk(KERN_INFO "Operacao bem sucedida\n");
@@ -70,23 +75,25 @@ ssize_t my_driver_read (struct file *dfile, char __user *buffer , size_t length 
 ssize_t my_driver_write (struct file *dfile, const char __user *buffer, size_t length, loff_t *offset){
 	k = 0;
 	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);
-	//i 1, 2
-	if (buffer[0] == 'i'){
-		inserir(grafo, (int)buffer[2], (int)buffer[5]);		
-		sprintf(message,"Inserido com sucesso!\n");
+	
+	if (buffer[0] == 'i' && buffer[1] == ' '){
+		inserir(grafo, (int)buffer[2] - 48, buffer[5] - 48);
+		printk(KERN_ALERT "%s%d%s%d%s", "Inserida aresta entre o vertice ", buffer[2] - 48, " e ", buffer[5] - 48, "\n");
+		sprintf(message,"Inserido com sucesso!\n");		
 		msgLen = strlen(message);
 		k++;
 	}
-	//r 2
-	else if (buffer[0] == 'r'){
-		remover(grafo, (int)buffer[2]);
+
+	else if (buffer[0] == 'r' && buffer[1] == ' '){
+		remover(grafo, buffer[2] - 48);
+		printk(KERN_ALERT "%s%d%s%d%s", "Removida a aresta entre o vertice ", buffer[2] - 48, " e ", buffer[5] - 48, "\n");
 		sprintf(message,"Removido com sucesso!\n");
 		msgLen = strlen(message);
 		k++;
 	}
-	//b 2
-	else if (buffer[0] == 'b'){
-		buscar(grafo, adj, (int)buffer[2]);
+	
+	else if (buffer[0] == 'b' && buffer[1] == ' '){
+		buscar(grafo, adj, buffer[2] - 48);
 		sprintf(message,"Buscado com sucesso!\n");
 		msgLen = strlen(message);
 		k++;
@@ -99,18 +106,7 @@ ssize_t my_driver_write (struct file *dfile, const char __user *buffer, size_t l
 
 	k = 0;
 	
-
-	//printf(KERN_INFO, "Operacao realizada com sucesso!\n");
-
-
-
-	
-	//sprintf(message, "%s(%zu letters)", buffer, length);
-	//msgLen = strlen(message);
-	//printk(KERN_INFO "Recebidos %zu caracteres do usuario\n", length);
-	return length;
-	//printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);
-	//return length;
+	return length;	
 }
 
 int my_driver_open (struct inode *dinode , struct file *dfile ){
