@@ -48,23 +48,8 @@ int main(){
             perror("FALHA NA ABERTURA DO DISPOSITIVO!3rm \n");
             return errno;
         }
-    }
-
-   	
-    
-    /*
-    printf("Lendo do dispositivo...\n");
-    ret = read(fd, entrada, 256);
-    //entrada possui meu conteudo
-    if (ret < 0){
-    	perror("FALHA NA ABERTURA DO DISPOSITIVO!\n");
-		return errno;
-    }
-    */
-
-   //printf("The received message is: [%s]\n", entrada);
+    }    
+      
    printf("Fim do programa\n");
    return 0;
-
-
 }

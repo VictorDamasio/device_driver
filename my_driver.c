@@ -53,7 +53,7 @@ void buscar(int grafo[][10], int adj[10], int verticeI){
 }
 
 ssize_t my_driver_read (struct file *dfile, char __user *buffer , size_t length , loff_t *offset){
-	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);	
+	printk(KERN_ALERT "Entrou na funcao %s \n", __FUNCTION__);	
 
 	error_count = 0;
 	error_count = copy_to_user(buffer, message, msgLen);
@@ -68,7 +68,6 @@ ssize_t my_driver_read (struct file *dfile, char __user *buffer , size_t length 
 		return -EFAULT;
 	}
 
-	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);
 	return 0;
 }
 
@@ -110,7 +109,7 @@ ssize_t my_driver_write (struct file *dfile, const char __user *buffer, size_t l
 }
 
 int my_driver_open (struct inode *dinode , struct file *dfile ){
-	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);
+	printk(KERN_ALERT "Entrou na funcao %s \n", __FUNCTION__);
 	for (i = 0; i < 10; i++){
         for (j = 0; j < 10; j++){
             grafo[i][j] = 0;
@@ -124,7 +123,7 @@ int my_driver_open (struct inode *dinode , struct file *dfile ){
 }
 
 int my_driver_close (struct inode *dinode ,  struct file *dfile){
-	printk(KERN_ALERT "Inside the %s function\n", __FUNCTION__);
+	printk(KERN_ALERT "Entrou na funcao %s \n", __FUNCTION__);
     return 0;
 }
 
@@ -146,7 +145,7 @@ static int my_driver_init(void){
 }
 
 static void my_driver_exit(void){
-	printk(KERN_ALERT "Goodbye, cruel world\n");
+	printk(KERN_ALERT "Adeus, mundo cruel!\n");
  	unregister_chrdev(240, "my_driver");
 }
 
